@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=69", "wheel", "Cython>=3.0", "numpy>=1.26"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "finder-modern"
+version = "0.1.0"
+description = "Modernized FINDER with PyTorch/PyG path and legacy compatibility"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "FINDER contributors"}]
+dependencies = [
+  "numpy>=1.26",
+  "scipy>=1.11",
+  "pandas>=2.1",
+  "networkx>=3.2",
+  "cython>=3.0",
+  "tqdm>=4.66",
+  "tomli>=2.0; python_version < '3.11'",
+  "torch>=2.2",
+  "torch-geometric>=2.5"
+]
+
+[project.scripts]
+finder = "finder.cli:main"
+
+[tool.setuptools]
+packages = ["finder"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

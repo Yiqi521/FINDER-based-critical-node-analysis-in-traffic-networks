@@ -92,8 +92,8 @@ cdef class py_MvcEnv:
         num_edges = graph1.num_edges    #得到Graph对象的连边个数
         edge_list = graph1.edge_list
         nodes_weight = graph1.nodes_weight
-        cint_edges_from = np.zeros([num_edges],dtype=np.int)
-        cint_edges_to = np.zeros([num_edges],dtype=np.int)
+        cint_edges_from = np.zeros([num_edges],dtype=np.int32)
+        cint_edges_to = np.zeros([num_edges],dtype=np.int32)
         cdouble_nodes_weight=np.zeros([num_nodes],dtype=np.double)
         cdef int i
         for i in range(num_nodes):

@@ -1,0 +1,62 @@
+[
+  {
+    "path": "code/FINDER_CN/models/nrange_30_50_iter_93300.ckpt.data-00000-of-00001",
+    "size": 447856,
+    "sha256": "d35891c2e19e2345cc3362355098292e6cc8428ac9ff06cc8e0cbabc14c2b734"
+  },
+  {
+    "path": "code/FINDER_CN/models/nrange_30_50_iter_93300.ckpt.index",
+    "size": 1496,
+    "sha256": "c421c44327b54571498a521197989a08a8a58783887f97b5a13f4fe8e511deca"
+  },
+  {
+    "path": "code/FINDER_CN/models/nrange_30_50_iter_93300.ckpt.meta",
+    "size": 525909,
+    "sha256": "966f94679611b8ba9573b63f5ddde140420e690b3b2ef5dafe2fe15039a76889"
+  },
+  {
+    "path": "code/FINDER_CN_cost/models/nrange_30_50_iter_122100.ckpt.data-00000-of-00001",
+    "size": 447856,
+    "sha256": "d09d2e1b0cb33fe772a3b855cf3090493ed08033bf00cf9128785186213b9bce"
+  },
+  {
+    "path": "code/FINDER_CN_cost/models/nrange_30_50_iter_122100.ckpt.index",
+    "size": 1496,
+    "sha256": "f238ea64a5277d2efc537275bb923fa2c66a90fc0ef2396a6154a4b638760a6f"
+  },
+  {
+    "path": "code/FINDER_CN_cost/models/nrange_30_50_iter_122100.ckpt.meta",
+    "size": 432834,
+    "sha256": "a6bc7d8fcb003553f9a5335a3104c9a6f7ed7b80af317883b0b7f7b1a4f6e517"
+  },
+  {
+    "path": "code/FINDER_ND/models/nrange_30_50_iter_78000.ckpt.data-00000-of-00001",
+    "size": 447856,
+    "sha256": "20941de834500a82ec6cf478d2e60826322bdb5068ae8e34c70369f3646b4954"
+  },
+  {
+    "path": "code/FINDER_ND/models/nrange_30_50_iter_78000.ckpt.index",
+    "size": 1496,
+    "sha256": "3156ca5207615867ef92c4ad10ec4c90f3e433a01d42953b33bdfbdea46f0057"
+  },
+  {
+    "path": "code/FINDER_ND/models/nrange_30_50_iter_78000.ckpt.meta",
+    "size": 525814,
+    "sha256": "52e75bf9bad820334f760828935f258501b383a7b01fb4fdbdad93ad55d49601"
+  },
+  {
+    "path": "code/FINDER_ND_cost/models/nrange_30_50_iter_134100.ckpt.data-00000-of-00001",
+    "size": 447856,
+    "sha256": "2eae020692660af98ca41c95d899881f8acfff801154b4416c6deea9acbf06a0"
+  },
+  {
+    "path": "code/FINDER_ND_cost/models/nrange_30_50_iter_134100.ckpt.index",
+    "size": 1496,
+    "sha256": "b4e41c0b5c1d596802f9c22f05ac31c73d9fef22998f4acc0d1cf0a8bbac1457"
+  },
+  {
+    "path": "code/FINDER_ND_cost/models/nrange_30_50_iter_134100.ckpt.meta",
+    "size": 523111,
+    "sha256": "853ba1aae6d118f19c6397ec2436d8043551a854c33aed3dbfea9c9357c4be81"
+  }
+]

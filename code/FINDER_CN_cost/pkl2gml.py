@@ -33,7 +33,7 @@ for i in range(len(data_test_name)):
         # for node in g.nodes():
         #     weights[node] = degree[node] / maxDegree
 
-        nx.set_node_attributes(g, 'weight', weights)
+        nx.set_node_attributes(g, weights, 'weight')
         save_dir_g = '%s/g_%d'%(save_dir,j)
         nx.write_gml(g, save_dir_g)
 

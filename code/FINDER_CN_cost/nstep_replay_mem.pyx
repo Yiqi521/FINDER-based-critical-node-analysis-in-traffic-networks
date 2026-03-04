@@ -44,8 +44,8 @@ cdef class py_ReplaySample:
         edge_list = graph1.edge_list
         nodes_weight = graph1.nodes_weight
 
-        cint_edges_from = np.zeros([num_edges],dtype=np.int)
-        cint_edges_to = np.zeros([num_edges],dtype=np.int)
+        cint_edges_from = np.zeros([num_edges],dtype=np.int32)
+        cint_edges_to = np.zeros([num_edges],dtype=np.int32)
         cdouble_nodes_weight = np.zeros([num_nodes],dtype=np.double)
 
         cdef int i
@@ -150,8 +150,8 @@ cdef class py_NStepReplayMem:
         num_edges = graph1.num_edges    #得到Graph对象的连边个数
         edge_list = graph1.edge_list
         nodes_weight = graph1.nodes_weight
-        cint_edges_from = np.zeros([num_edges],dtype=np.int)
-        cint_edges_to = np.zeros([num_edges],dtype=np.int)
+        cint_edges_from = np.zeros([num_edges],dtype=np.int32)
+        cint_edges_to = np.zeros([num_edges],dtype=np.int32)
         cdouble_nodes_weight = np.zeros([num_nodes],dtype=np.double)
         for i in range(num_nodes):
             cdouble_nodes_weight[i] = nodes_weight[i]
@@ -165,7 +165,7 @@ cdef class py_NStepReplayMem:
         edges = g.edges()
         weights = []
         for node in nodes:
-            weights.append(g.node[node]['weight'])
+            weights.append(g.nodes[node]['weight'])
         if len(edges) > 0:
             a, b = zip(*edges)
             A = np.array(a)

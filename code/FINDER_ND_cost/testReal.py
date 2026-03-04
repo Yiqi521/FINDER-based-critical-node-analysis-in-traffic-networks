@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import sys,os
 sys.path.append(os.path.dirname(__file__) + os.sep + '../')

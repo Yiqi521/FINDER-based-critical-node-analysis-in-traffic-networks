@@ -1,0 +1,24 @@
+[train]
+variant = "ND"
+embedding_size = 64
+hidden_size = 64
+learning_rate = 0.0001
+gamma = 1.0
+n_step = 5
+memory_size = 50000
+batch_size = 64
+episodes = 2000
+target_update = 500
+epsilon_start = 1.0
+epsilon_end = 0.05
+epsilon_decay_steps = 10000
+num_min = 30
+num_max = 50
+graph_type = "barabasi_albert"
+seed = 42
+device = "cpu"
+out_dir = "models_torch/nd"
+synthetic_data_dir = "data/synthetic/uniform_cost/30-50"
+real_data_path = "data/real/Crime.txt"
+legacy_variant_dir = "code/FINDER_ND"
+legacy_model_ckpt = "code/FINDER_ND/models/nrange_30_50_iter_78000.ckpt"

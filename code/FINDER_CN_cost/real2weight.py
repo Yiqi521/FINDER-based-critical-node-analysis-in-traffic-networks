@@ -16,7 +16,7 @@ for k in range(2):
 
         if k == 0:  ### degree weight
             degree = nx.degree(g)
-            maxDegree = max(degree.values())
+            maxDegree = max(dict(degree).values())
             weights = {}
             for node in g.nodes():
                 weights[node] = degree[node] / maxDegree
@@ -26,6 +26,6 @@ for k in range(2):
             for node in g.nodes():
                 weights[node] = random.uniform(0, 1)
 
-        nx.set_node_attributes(g, 'weight', weights)
+        nx.set_node_attributes(g, weights, 'weight')
         save_dir_g = '%s/p2p-Gnutella%s_%s.gml' % (save_dir, data_name[i], costType[k])
         nx.write_gml(g, save_dir_g)

@@ -1,0 +1,21 @@
+[train]
+variant = "ND"
+hidden_size = 64
+learning_rate = 0.0001
+gamma = 1.0
+n_step = 3
+memory_size = 2048
+batch_size = 16
+episodes = 20
+target_update = 50
+epsilon_start = 1.0
+epsilon_end = 0.05
+epsilon_decay_steps = 200
+num_min = 30
+num_max = 50
+graph_type = "barabasi_albert"
+seed = 42
+device = "cpu"
+out_dir = "models_torch/nd_smoke"
+legacy_variant_dir = "code/FINDER_ND"
+legacy_model_ckpt = "code/FINDER_ND/models/nrange_30_50_iter_78000.ckpt"

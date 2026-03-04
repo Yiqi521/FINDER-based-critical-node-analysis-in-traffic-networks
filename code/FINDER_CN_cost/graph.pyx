@@ -118,8 +118,8 @@ cdef class py_GSet:
         edge_list = graph.edge_list
         nodes_weight = graph.nodes_weight
 
-        cint_edges_from = np.zeros([num_edges],dtype=np.int)
-        cint_edges_to = np.zeros([num_edges],dtype=np.int)
+        cint_edges_from = np.zeros([num_edges],dtype=np.int32)
+        cint_edges_to = np.zeros([num_edges],dtype=np.int32)
         cdouble_nodes_weight = np.zeros([num_nodes],dtype=np.double)
 
         cdef int i

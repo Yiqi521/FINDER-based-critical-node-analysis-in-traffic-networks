@@ -42,8 +42,8 @@ cdef class py_GraphStruct:
     @property
     def in_edges(self):
         return deref(deref(self.inner_GraphStruct).in_edges).head
-        #     cint_edges_from = np.zeros([num_edges],dtype=np.int)
-        # cint_edges_to = np.zeros([num_edges],dtype=np.int)
+        #     cint_edges_from = np.zeros([num_edges],dtype=np.int32)
+        # cint_edges_to = np.zeros([num_edges],dtype=np.int32)
         # for i in range(num_edges):
         #     cint_edges_from[i]=edge_list[i].first
         #     cint_edges_to[i] =edge_list[i].second
