@@ -1,4 +1,4 @@
-# FINDER (FInding key players in complex Networks through DEep Reinforcement learning)
+# FINDER (FInding key players in complex Networks through Deep Reinforcement learning)
 
 ### Requirements
 
