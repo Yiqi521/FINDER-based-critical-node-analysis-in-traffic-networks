@@ -34,8 +34,13 @@ def _to_tensors(g: nx.Graph, device: torch.device) -> tuple[torch.Tensor, torch.
     return x, edge_index
 
 
-def evaluate_graph(g: nx.Graph, model: FinderModel, device: torch.device) -> tuple[float, float]:
-    env = FinderEnv(g)
+def evaluate_graph(
+    g: nx.Graph,
+    model: FinderModel,
+    device: torch.device,
+    task: str = "CN",
+) -> tuple[float, float]:
+    env = FinderEnv(g, task=task)  # type: ignore[arg-type]
     env.reset()
     x, edge_index = _to_tensors(g, device)
     t1 = time.perf_counter()
@@ -50,7 +55,11 @@ def evaluate_graph(g: nx.Graph, model: FinderModel, device: torch.device) -> tup
         action = actions[int(torch.argmax(qvals).item())]
         env.step(action)
     t2 = time.perf_counter()
-    score = -env.remaining_cnd_score()
+    # Report the negative score so higher is better for all variants
+    if task in ("CN", "CN_cost"):
+        score = -env.remaining_cnd_score()
+    else:
+        score = -env._max_cc_size()
     return float(score), float(t2 - t1)
 
 
@@ -59,8 +68,8 @@ def evaluate_synthetic(data_dir: str, model_path: str, cfg: TrainConfig) -> dict
     model = _load_model(model_path, device)
     scores, times = [], []
     for i in range(100):
-        g = nx.read_gml(Path(data_dir) / f"g_{i}")
-        s, t = evaluate_graph(g, model, device)
+        g = nx.convert_node_labels_to_integers(nx.read_gml(Path(data_dir) / f"g_{i}"))
+        s, t = evaluate_graph(g, model, device, task=cfg.variant)
         scores.append(s)
         times.append(t)
     return {
@@ -74,6 +83,6 @@ def evaluate_synthetic(data_dir: str, model_path: str, cfg: TrainConfig) -> dict
 def evaluate_real(data_path: str, model_path: str, cfg: TrainConfig) -> dict[str, float]:
     device = torch.device(cfg.device)
     model = _load_model(model_path, device)
-    g = nx.read_edgelist(data_path)
-    score, elapsed = evaluate_graph(g, model, device)
+    g = nx.convert_node_labels_to_integers(nx.read_edgelist(data_path))
+    score, elapsed = evaluate_graph(g, model, device, task=cfg.variant)
     return {"score": score, "time": elapsed}

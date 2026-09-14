@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import argparse
 import json
+from datetime import datetime
+from pathlib import Path
 
 from finder.config import TrainConfig, load_config
 
@@ -39,8 +41,31 @@ def main() -> None:
     p_parity.add_argument("--legacy-dir", type=str, default="")
     p_parity.add_argument("--legacy-model", type=str, default="")
 
+    p_pre = sub.add_parser("traffic-preprocess", help="Preprocess map into computable Tokyo subgraph")
+    p_pre.add_argument("--input", type=str, required=True)
+    p_pre.add_argument("--output-dir", type=str, default="runs")
+    p_pre.add_argument("--bbox", type=str, default="")
+    p_pre.add_argument("--max-nodes", type=int, default=0)
+    p_pre.add_argument("--max-edges", type=int, default=0)
+
+    p_score = sub.add_parser("traffic-score-nodes", help="Score critical nodes with FINDER model")
+    p_score.add_argument("--graph", type=str, required=True)
+    p_score.add_argument("--model", type=str, required=True)
+    p_score.add_argument("--config", type=str, default="configs/default.toml")
+    p_score.add_argument("--output-dir", type=str, default="runs")
+
+    p_bench = sub.add_parser("traffic-benchmark-paths", help="Benchmark path planners on OD pairs")
+    p_bench.add_argument("--graph", type=str, required=True)
+    p_bench.add_argument("--pairs", type=int, default=100)
+    p_bench.add_argument("--output-dir", type=str, default="runs")
+
+    p_report = sub.add_parser("traffic-report", help="Build relationship report from benchmarks + node scores")
+    p_report.add_argument("--benchmark-csv", type=str, required=True)
+    p_report.add_argument("--nodes-csv", type=str, required=True)
+    p_report.add_argument("--output-dir", type=str, default="runs")
+
     args = parser.parse_args()
-    cfg = _load_cfg(args.config)
+    cfg = _load_cfg(getattr(args, "config", None))
 
     if args.cmd == "train":
         from finder.trainer import train
@@ -71,6 +96,52 @@ def main() -> None:
             legacy_model_path=args.legacy_model or None,
         )
         print(str(out))
+    elif args.cmd == "traffic-preprocess":
+        from experiments.traffic.preprocess import preprocess_map
+
+        run_dir = Path(args.output_dir) / datetime.now().strftime("%Y%m%d_%H%M%S_preprocess")
+        result = preprocess_map(
+            input_path=args.input,
+            output_dir=run_dir,
+            bbox=args.bbox or None,
+            max_nodes=args.max_nodes if args.max_nodes > 0 else None,
+            max_edges=args.max_edges if args.max_edges > 0 else None,
+        )
+        print(json.dumps({"graph": str(result.graph_path), "stats": str(result.stats_path)}, indent=2))
+    elif args.cmd == "traffic-score-nodes":
+        from experiments.traffic.critical_nodes import perturbation_report, score_critical_nodes
+        import networkx as nx
+        import pandas as pd
+
+        run_dir = Path(args.output_dir) / datetime.now().strftime("%Y%m%d_%H%M%S_score")
+        result = score_critical_nodes(args.graph, run_dir, model_path=args.model, cfg=cfg)
+        g = nx.convert_node_labels_to_integers(nx.read_graphml(args.graph))
+        ranks = pd.read_csv(result.table_path).sort_values("finder_rank")["node"].tolist()
+        perturb = perturbation_report(g, [int(n) for n in ranks])
+        perturb_path = run_dir / "perturbation.csv"
+        perturb.to_csv(perturb_path, index=False)
+        print(
+            json.dumps(
+                {
+                    "critical_nodes": str(result.table_path),
+                    "metadata": str(result.metadata_path),
+                    "perturbation": str(perturb_path),
+                },
+                indent=2,
+            )
+        )
+    elif args.cmd == "traffic-benchmark-paths":
+        from experiments.traffic.benchmark import run_benchmark
+
+        run_dir = Path(args.output_dir) / datetime.now().strftime("%Y%m%d_%H%M%S_benchmark")
+        result = run_benchmark(args.graph, run_dir, n_pairs=args.pairs)
+        print(json.dumps({"results": str(result.results_path), "summary": str(result.summary_path)}, indent=2))
+    elif args.cmd == "traffic-report":
+        from experiments.traffic.analysis import build_relationship_report
+
+        run_dir = Path(args.output_dir) / datetime.now().strftime("%Y%m%d_%H%M%S_report")
+        result = build_relationship_report(args.benchmark_csv, args.nodes_csv, run_dir)
+        print(json.dumps({"merged": str(result.merged_path), "report": str(result.report_path)}, indent=2))
 
 
 if __name__ == "__main__":

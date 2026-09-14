@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import random
+from dataclasses import asdict
 from pathlib import Path
 
 import networkx as nx
@@ -19,12 +20,17 @@ from finder.types import Transition
 def _gen_graph(cfg: TrainConfig) -> nx.Graph:
     n = np.random.randint(cfg.num_min, cfg.num_max + 1)
     if cfg.graph_type == "erdos_renyi":
-        return nx.erdos_renyi_graph(n=n, p=0.15)
-    if cfg.graph_type == "powerlaw":
-        return nx.powerlaw_cluster_graph(n=n, m=4, p=0.05)
-    if cfg.graph_type == "small-world":
-        return nx.connected_watts_strogatz_graph(n=n, k=8, p=0.1)
-    return nx.barabasi_albert_graph(n=n, m=4)
+        g = nx.erdos_renyi_graph(n=n, p=0.15)
+    elif cfg.graph_type == "powerlaw":
+        g = nx.powerlaw_cluster_graph(n=n, m=4, p=0.05)
+    elif cfg.graph_type == "small-world":
+        g = nx.connected_watts_strogatz_graph(n=n, k=8, p=0.1)
+    else:
+        g = nx.barabasi_albert_graph(n=n, m=4)
+    if cfg.variant in ("CN_cost", "ND_cost"):
+        for node in g.nodes:
+            g.nodes[node]["weight"] = float(np.random.uniform(0.0, 1.0))
+    return g
 
 
 def _to_tensors(g: nx.Graph, device: torch.device) -> tuple[torch.Tensor, torch.Tensor]:
@@ -65,7 +71,7 @@ def train(cfg: TrainConfig) -> Path:
     global_step = 0
     for ep in trange(cfg.episodes, desc="Training"):
         g = _gen_graph(cfg)
-        env = FinderEnv(g)
+        env = FinderEnv(g, task=cfg.variant)
         env.reset()
         x, edge_index = _to_tensors(g, device)
 
@@ -141,5 +147,5 @@ def train(cfg: TrainConfig) -> Path:
     out_dir = Path(cfg.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     out = out_dir / f"finder_{cfg.variant.lower()}.pt"
-    torch.save({"model": model.state_dict(), "config": cfg.__dict__}, out)
+    torch.save({"model": model.state_dict(), "config": asdict(cfg)}, out)
     return out
